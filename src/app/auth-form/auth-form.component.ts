@@ -5,11 +5,11 @@ import { FormsModule } from '@angular/forms'
 @Component({
   selector: 'auth-form',
   standalone: true,
-  imports:[FormsModule],
+  imports: [FormsModule],
   template: `
     <div class="auth-form">
       <form (ngSubmit)="onSubmit(form.value)" #form="ngForm">
-        <ng-content></ng-content>
+        <ng-content select="h3"></ng-content>
         <label>
           Email Address
           <input type="email" name="email" ngModel />
@@ -18,7 +18,7 @@ import { FormsModule } from '@angular/forms'
           Password
           <input type="password" name="password" ngModel />
         </label>
-        <button type="submit">Submit</button>
+        <ng-content select="button"></ng-content>
       </form>
     </div>
   `,
@@ -26,5 +26,7 @@ import { FormsModule } from '@angular/forms'
 export class AuthFormComponent {
   @Output() submitted: EventEmitter<User> = new EventEmitter<User>();
 
-  onSubmit(value: User) {}
+  onSubmit(value: User) {
+    this.submitted.emit(value);
+  }
 }
