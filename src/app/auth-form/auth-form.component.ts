@@ -18,6 +18,7 @@ import { FormsModule } from '@angular/forms'
           Password
           <input type="password" name="password" ngModel />
         </label>
+        <ng-content select="auth-remember"></ng-content>
         <ng-content select="button"></ng-content>
       </form>
     </div>
