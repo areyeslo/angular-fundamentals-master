@@ -17,8 +17,6 @@ import { AuthRememberComponent } from './auth-form/auth-remember.component';
       <auth-form (submitted)="loginUser($event)">
         <h3>Login</h3>
         <auth-remember (checked)="rememberUser($event)"> </auth-remember>
-        <auth-remember (checked)="rememberUser($event)"> </auth-remember>
-        <auth-remember (checked)="rememberUser($event)"> </auth-remember>
         <button type="submit">Login</button>
       </auth-form>
     </div>
