@@ -9,6 +9,7 @@ import {
   QueryList,
   AfterContentInit,
   ChangeDetectorRef,
+  ElementRef,
 } from '@angular/core';
 import { User } from './auth-form.interface';
 import { FormsModule } from '@angular/forms';
@@ -20,30 +21,20 @@ import { AuthMessageComponent } from './auth-message.component';
 @Component({
   selector: 'auth-form',
   standalone: true,
-  imports: [FormsModule, NgIf, AuthRememberComponent, AuthMessageComponent],
+  imports: [FormsModule, NgIf, AuthMessageComponent],
   template: `
     <div class="auth-form">
       <form (ngSubmit)="onSubmit(form.value)" #form="ngForm">
         <ng-content select="h3"></ng-content>
         <label>
           Email Address
-          <input type="email" name="email" ngModel />
+          <input type="email" name="email" ngModel #email/>
         </label>
         <label>
           Password
           <input type="password" name="password" ngModel />
         </label>
         <ng-content select="auth-remember"></ng-content>
-        <auth-message
-          #message
-          [style.display]="showMessage ? 'inherit' : 'none'"
-        >
-        </auth-message>
-        <auth-message
-          #message
-          [style.display]="showMessage ? 'inherit' : 'none'"
-        >
-        </auth-message>
         <auth-message
           #message
           [style.display]="showMessage ? 'inherit' : 'none'"
@@ -61,6 +52,9 @@ export class AuthFormComponent implements AfterContentInit, AfterViewInit {
   @ContentChildren(AuthRememberComponent)
   rememberList!: QueryList<AuthRememberComponent>;
 
+  //Query an element directly
+  @ViewChild('email') email!: ElementRef
+
   //Angular resolve the query statically, during the component initialization, rather than
   //waiting until after the view has been created. It uses a template reference #message
   // @ViewChild('message', { static: true }) message!: AuthMessageComponent;
@@ -72,6 +66,7 @@ export class AuthFormComponent implements AfterContentInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     // console.log(this.message);
+    console.log(this.email)
     if (this.message) {
       this.message.forEach((message) => {
         message.days = 30;
