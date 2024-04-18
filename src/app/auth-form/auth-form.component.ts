@@ -20,6 +20,13 @@ import { AuthMessageComponent } from './auth-message.component';
 
 @Component({
   selector: 'auth-form',
+  styles: [
+    `
+    .email{
+      border-color: #9f72e6
+    }
+    `
+  ],
   standalone: true,
   imports: [FormsModule, NgIf, AuthMessageComponent],
   template: `
@@ -66,7 +73,10 @@ export class AuthFormComponent implements AfterContentInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     // console.log(this.message);
-    console.log(this.email)
+    // console.log(this.email.nativeElement)
+    this.email.nativeElement.setAttribute('placeholder','Enter your email address');
+    this.email.nativeElement.classList.add('email');
+    this.email.nativeElement.focus();
     if (this.message) {
       this.message.forEach((message) => {
         message.days = 30;
