@@ -1,61 +1,14 @@
-import {
-  AfterContentInit,
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  ComponentRef,
-  ViewChild,
-  ViewContainerRef,
-} from '@angular/core';
-
-import { User } from './auth-form/auth-form.interface';
-import { AuthFormComponent } from './auth-form/auth-form.component';
+import { Component } from '@angular/core';
+import { StockInventoryComponent } from './stock-inventory/containers/stock-inventory/stock-inventory.component';
 
 @Component({
   selector: 'app-root',
-  imports: [],
   standalone: true,
+  imports: [StockInventoryComponent],
   template: `
     <div>
-      <button (click)="destroyComponent()">Destroy<</button>
-      <button (click)="moveComponent()">Move</button>
-      <div #entry></div>
+      <stock-inventory></stock-inventory>
     </div>
   `,
 })
-export class AppComponent implements AfterViewInit {
-  component!: ComponentRef<AuthFormComponent>;
-
-  //static - true to resolve query results before change detection runs
-  //static queries with static - true resolve once the view has been created, but before
-  //change detection runs (before the ngOnInit() callback is called)
-  @ViewChild('entry', { read: ViewContainerRef }) entry!: ViewContainerRef;
-
-  constructor(private cd: ChangeDetectorRef) {}
-
-  ngAfterViewInit(): void {
-    // const authFormFactory = this.resolver.resolveComponentFactory(AuthFormComponent);
-    // const component = this.entry.createComponent(authFormFactory)
-
-    if (this.entry) {
-      this.entry.createComponent(AuthFormComponent);
-      this.component = this.entry.createComponent(AuthFormComponent,{index:0});
-      this.component.instance.title = 'Create Account';
-      this.component.instance.submitted.subscribe(this.loginUser);
-      this.cd.detectChanges();
-    }
-  }
-
-  destroyComponent() {
-    // console.log(this.component)
-    this.component.destroy();
-  }
-
-  moveComponent(){
-    this.entry.move(this.component.hostView,1);
-  }
-
-  loginUser(user: User) {
-    console.log('Login', user);
-  }
-}
+export class AppComponent {}
