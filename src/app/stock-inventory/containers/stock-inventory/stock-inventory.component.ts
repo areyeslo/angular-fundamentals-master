@@ -1,22 +1,26 @@
 import { JsonPipe } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormArray, ReactiveFormsModule } from '@angular/forms';
+
+import { StockBranchComponent } from "../../components/stock-branch/stock-branch.component";
+import { StockSelectorComponent } from "../../components/stock-selector/stock-selector.component";
+import { StockProductsComponent } from "../../components/stock-products/stock-products.component";
 
 @Component({
-  selector: 'stock-inventory',
-  standalone: true,
-  imports: [ReactiveFormsModule, JsonPipe],
-  template: `
+    selector: 'stock-inventory',
+    standalone: true,
+    template: `
     <div class="stock-inventory">
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div formGroupName="store">
-          <input type="text" placeholder="Branch ID" formControlName="branch" />
-          <input
-            type="text"
-            placeholder="Manager Code"
-            formControlName="code"
-          />
-        </div>
+
+        <stock-branch [parent]="form">
+        </stock-branch>
+
+        <stock-selector [parent]="form">
+        </stock-selector>
+
+        <stock-products [parent]="form">
+        </stock-products>
 
         <div class="stock-inventory__buttons">
           <button type="submit" [disabled]="form.invalid">Order stock</button>
@@ -26,14 +30,21 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
       </form>
     </div>
   `,
-  styleUrls: ['./stock-inventory.component.scss'],
+    styleUrls: ['./stock-inventory.component.scss'],
+    imports: [ReactiveFormsModule, JsonPipe, StockBranchComponent, StockSelectorComponent, StockProductsComponent]
 })
 export class StockInventoryComponent {
   form = new FormGroup({
     store: new FormGroup({
-      branch: new FormControl('B182'),
-      code: new FormControl('1234'),
+      branch: new FormControl(''),
+      code: new FormControl(''),
     }),
+    selector: new FormGroup({
+      product_id: new FormControl(''),
+      quantity: new FormControl(10)
+    }),
+    // Create a collection of FormControls or FormGroups
+    stock: new FormArray([])
   });
 
   onSubmit() {
