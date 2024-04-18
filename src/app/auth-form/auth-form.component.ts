@@ -22,7 +22,7 @@ import { AuthMessageComponent } from './auth-message.component';
   template: `
     <div class="auth-form">
       <form (ngSubmit)="onSubmit(form.value)" #form="ngForm">
-        <ng-content select="h3"></ng-content>
+        <h3>{{title}}</h3>
         <label>
           Email Address
           <input type="email" name="email" ngModel #email/>

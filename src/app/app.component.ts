@@ -29,6 +29,7 @@ export class AppComponent implements AfterViewInit {
 
     if(this.entry){
       const component = this.entry.createComponent(AuthFormComponent);
+      component.instance.title="Create Account";
       this.cd.detectChanges();
     } 
 
