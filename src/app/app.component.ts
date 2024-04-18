@@ -1,35 +1,41 @@
-import { Component } from '@angular/core';
+import { AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, ViewChild, ViewContainerRef } from '@angular/core';
 
 import { User } from './auth-form/auth-form.interface';
 import { AuthFormComponent } from './auth-form/auth-form.component';
-import { AuthRememberComponent } from './auth-form/auth-remember.component';
 
 @Component({
   selector: 'app-root',
-  imports: [AuthFormComponent, AuthRememberComponent],
+  imports: [],
   standalone: true,
   template: `
     <div>
-      <auth-form (submitted)="loginUser($event)">
-        <h3>Login</h3>
-        <auth-remember (checked)="rememberUser($event)"> </auth-remember>
-        <button type="submit">Login</button>
-      </auth-form>
+      <div #entry>
+      </div>
     </div>
   `,
 })
-export class AppComponent {
-  rememberMe: boolean = false;
+export class AppComponent implements AfterViewInit {
+  
+  //static - true to resolve query results before change detection runs
+  //static queries with static - true resolve once the view has been created, but before
+  //change detection runs (before the ngOnInit() callback is called)
+  @ViewChild('entry',{read: ViewContainerRef}) entry!: ViewContainerRef;
 
-  createUser(user: User) {
-    console.log('Create account', user);
+  constructor(private cd: ChangeDetectorRef){}
+
+  ngAfterViewInit():void{
+    // const authFormFactory = this.resolver.resolveComponentFactory(AuthFormComponent);
+    // const component = this.entry.createComponent(authFormFactory)
+
+    if(this.entry){
+      const component = this.entry.createComponent(AuthFormComponent);
+      this.cd.detectChanges();
+    } 
+
   }
 
   loginUser(user: User) {
-    console.log('Login', user, this.rememberMe);
+    console.log('Login', user);
   }
 
-  rememberUser(remember: boolean) {
-    this.rememberMe = remember;
-  }
 }
