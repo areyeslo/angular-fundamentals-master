@@ -1,7 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Product } from '../../models/product.interface'
-import { NgForOf } from '@angular/common'
+import { Product } from '../../models/product.interface';
+import { NgForOf } from '@angular/common';
 
 @Component({
   selector: 'stock-selector',
@@ -25,7 +25,7 @@ import { NgForOf } from '@angular/common'
           min="10"
           max="1000"
         />
-        <button type="button">Add stock</button>
+        <button type="button" (click)="onAdd()">Add stock</button>
       </div>
     </div>
   `,
@@ -34,4 +34,13 @@ import { NgForOf } from '@angular/common'
 export class StockSelectorComponent {
   @Input() parent!: FormGroup;
   @Input() products!: Product[];
+
+  @Output() added = new EventEmitter<any>();
+
+  onAdd() {
+    //Gives the value for the entire group so this will contain the product_id and quantity
+    //Passing the value selected by the user (product_id and quantity)
+    console.log('onAdd emitting: ', this.parent?.get('selector')?.value);
+    this.added.emit(this.parent?.get('selector')?.value);
+  }
 }

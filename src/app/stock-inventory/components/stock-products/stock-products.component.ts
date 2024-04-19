@@ -1,18 +1,18 @@
-import { NgForOf } from '@angular/common'
+import { JsonPipe, NgForOf } from '@angular/common'
 import { Component, Input } from '@angular/core';
 import { FormArray, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'stock-products',
   standalone: true,
-  imports: [ReactiveFormsModule, NgForOf],
+  imports: [ReactiveFormsModule, NgForOf, JsonPipe],
   template: `
     <div class="stock-product" [formGroup]="parent">
       <div formArrayName="stock">
         <div *ngFor="let item of stocks; let i = index">
-          <div [formGroupName]="i" class="stock-product __content">
+          <div [formGroupName]="i" class="stock-product__content">
             <div class="stock-product__name">
-              {{ item.value.product_id }}
+              {{ item.value | json }}
             </div>
             <input
               formControlName="quantity"

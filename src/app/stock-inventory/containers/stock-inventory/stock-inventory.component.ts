@@ -18,7 +18,12 @@ import { StockItem } from '../../models/stock-item.interface'
         <!-- bind this component to the above formGroup refering to form in the class -->
         <stock-branch [parent]="form"> </stock-branch>
         <!-- bind this component to the above formGroup refering to form in the class -->
-        <stock-selector [parent]="form" [products]="products"> </stock-selector>
+        <stock-selector
+          [parent]="form"
+          [products]="products"
+          (added)="addStock($event)"
+        >
+        </stock-selector>
         <!-- bind this component to the above formGroup refering to form in the class -->
         <stock-products [parent]="form"> </stock-products>
 
@@ -82,20 +87,29 @@ export class StockInventoryComponent {
     }),
     // Collection of stock that we have added
     stock: new FormArray([
-      this.createStock({product_id:1, quantity:10}),
-      this.createStock({product_id:3, quantity:50})
+      this.createStock({ product_id: 1, quantity: 10 }),
+      this.createStock({ product_id: 3, quantity: 50 }),
     ]),
   });
 
-  createStock(stock: StockItem){
+  createStock(stock: StockItem) {
+    console.log("createStock: ", stock);
+    console.log('typeof stock.product_id: ', typeof stock.product_id);
     return new FormGroup({
       product_id: new FormControl(
-        typeof stock.product_id === 'number'
+        stock.product_id 
           ? parseInt(stock.product_id.toString(), 10)
           : ''
       ),
       quantity: new FormControl(stock.quantity || 10),
     });
+  }
+
+  //stock contains the same value as emitter added in stock-selector component
+  addStock(stock: StockItem) {
+    const control = this.form.get('stock') as FormArray;
+    console.log('stock (addStock)', stock);
+    control.push(this.createStock(stock));
   }
 
   onSubmit() {
