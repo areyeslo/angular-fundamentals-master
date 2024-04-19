@@ -1,12 +1,17 @@
 import { JsonPipe } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, FormArray, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormArray,
+  ReactiveFormsModule,
+} from '@angular/forms';
 
-import { StockBranchComponent } from "../../components/stock-branch/stock-branch.component";
-import { StockSelectorComponent } from "../../components/stock-selector/stock-selector.component";
-import { StockProductsComponent } from "../../components/stock-products/stock-products.component";
+import { StockBranchComponent } from '../../components/stock-branch/stock-branch.component';
+import { StockSelectorComponent } from '../../components/stock-selector/stock-selector.component';
+import { StockProductsComponent } from '../../components/stock-products/stock-products.component';
 import { Product } from '../../models/product.interface';
-import { StockItem } from '../../models/stock-item.interface'
+import { StockItem } from '../../models/stock-item.interface';
 
 @Component({
   selector: 'stock-inventory',
@@ -25,9 +30,7 @@ import { StockItem } from '../../models/stock-item.interface'
         >
         </stock-selector>
         <!-- bind this component to the above formGroup refering to form in the class -->
-        <stock-products 
-          [parent]="form" 
-          (removed)="removeStock($event)">
+        <stock-products [parent]="form" (removed)="removeStock($event)">
         </stock-products>
 
         <div class="stock-inventory__buttons">
@@ -76,33 +79,33 @@ export class StockInventoryComponent {
     },
   ];
 
-  form = new FormGroup({
+  //Before FormGroup
+  form = this.fb.group({
     //This is the name of the form included in <form>
-    store: new FormGroup({
+    store: this.fb.group({
       //This is a div grouping branch and code
-      branch: new FormControl(''), //This is input in html template
-      code: new FormControl(''), //This is input in html template
+      // Before FormControl
+      branch: '', //This is input in html template
+      code: '', //This is input in html template
     }),
-    // selector: this.createStock({}),
-    selector: new FormGroup({
-      product_id: new FormControl(''),
-      quantity: new FormControl(10),
-    }),
+    selector: this.createStock({}),
     // Collection of stock that we have added
-    stock: new FormArray([
+    stock: this.fb.array([
       this.createStock({ product_id: 1, quantity: 10 }),
       this.createStock({ product_id: 3, quantity: 50 }),
     ]),
   });
 
+  constructor(private fb: FormBuilder) {}
+
   createStock(stock: StockItem) {
     console.log('createStock: ', stock);
     console.log('typeof stock.product_id: ', typeof stock.product_id);
-    return new FormGroup({
-      product_id: new FormControl(
-        stock.product_id ? parseInt(stock.product_id.toString(), 10) : ''
-      ),
-      quantity: new FormControl(stock.quantity || 10),
+    return this.fb.group({
+      product_id: stock.product_id
+        ? parseInt(stock.product_id.toString(), 10)
+        : '',
+      quantity: stock.quantity || 10,
     });
   }
 
@@ -113,7 +116,7 @@ export class StockInventoryComponent {
     control.push(this.createStock(stock));
   }
 
-  removeStock({ group, index }: { group: FormGroup, index: number }) {
+  removeStock({ group, index }: { group: FormGroup; index: number }) {
     const control = this.form.get('stock') as FormArray;
     control.removeAt(index);
   }
