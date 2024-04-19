@@ -12,11 +12,19 @@ import { NgForOf } from '@angular/common'
       <div formGroupName="selector">
         <select formControlName="product_id">
           <option value="">Select stock</option>
+          <!-- Value is property binding to bind the value of 'product.id' to the 'value' attribute
+          of the <option> element -->
           <option *ngFor="let product of products" [value]="product.id">
             {{ product.name }}
           </option>
         </select>
-        <input type="number" step="10" min="10" max="1000" formControlName="quantity">
+        <input
+          formControlName="quantity"
+          type="number"
+          step="10"
+          min="10"
+          max="1000"
+        />
         <button type="button">Add stock</button>
       </div>
     </div>

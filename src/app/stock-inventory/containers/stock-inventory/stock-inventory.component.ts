@@ -5,18 +5,21 @@ import { FormControl, FormGroup, FormArray, ReactiveFormsModule } from '@angular
 import { StockBranchComponent } from "../../components/stock-branch/stock-branch.component";
 import { StockSelectorComponent } from "../../components/stock-selector/stock-selector.component";
 import { StockProductsComponent } from "../../components/stock-products/stock-products.component";
-import { Product } from '../../models/product.interface'
+import { Product } from '../../models/product.interface';
+import { StockItem } from '../../models/stock-item.interface'
 
 @Component({
   selector: 'stock-inventory',
   standalone: true,
   template: `
     <div class="stock-inventory">
+      <!-- Binding formGroup to variable form -->
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <!-- bind this component to the above formGroup refering to form in the class -->
         <stock-branch [parent]="form"> </stock-branch>
-
+        <!-- bind this component to the above formGroup refering to form in the class -->
         <stock-selector [parent]="form" [products]="products"> </stock-selector>
-
+        <!-- bind this component to the above formGroup refering to form in the class -->
         <stock-products [parent]="form"> </stock-products>
 
         <div class="stock-inventory__buttons">
@@ -66,17 +69,34 @@ export class StockInventoryComponent {
   ];
 
   form = new FormGroup({
+    //This is the name of the form included in <form>
     store: new FormGroup({
-      branch: new FormControl(''),
-      code: new FormControl(''),
+      //This is a div grouping branch and code
+      branch: new FormControl(''), //This is input in html template
+      code: new FormControl(''), //This is input in html template
     }),
+    // selector: this.createStock({}),
     selector: new FormGroup({
       product_id: new FormControl(''),
       quantity: new FormControl(10),
     }),
-    // Create a collection of FormControls or FormGroups
-    stock: new FormArray([]),
+    // Collection of stock that we have added
+    stock: new FormArray([
+      this.createStock({product_id:1, quantity:10}),
+      this.createStock({product_id:3, quantity:50})
+    ]),
   });
+
+  createStock(stock: StockItem){
+    return new FormGroup({
+      product_id: new FormControl(
+        typeof stock.product_id === 'number'
+          ? parseInt(stock.product_id.toString(), 10)
+          : ''
+      ),
+      quantity: new FormControl(stock.quantity || 10),
+    });
+  }
 
   onSubmit() {
     console.log('Submit:', this.form.value);
