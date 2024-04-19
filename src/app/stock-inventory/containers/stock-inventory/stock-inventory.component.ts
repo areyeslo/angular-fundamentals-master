@@ -25,7 +25,10 @@ import { StockItem } from '../../models/stock-item.interface'
         >
         </stock-selector>
         <!-- bind this component to the above formGroup refering to form in the class -->
-        <stock-products [parent]="form"> </stock-products>
+        <stock-products 
+          [parent]="form" 
+          (removed)="removeStock($event)">
+        </stock-products>
 
         <div class="stock-inventory__buttons">
           <button type="submit" [disabled]="form.invalid">Order stock</button>
@@ -93,13 +96,11 @@ export class StockInventoryComponent {
   });
 
   createStock(stock: StockItem) {
-    console.log("createStock: ", stock);
+    console.log('createStock: ', stock);
     console.log('typeof stock.product_id: ', typeof stock.product_id);
     return new FormGroup({
       product_id: new FormControl(
-        stock.product_id 
-          ? parseInt(stock.product_id.toString(), 10)
-          : ''
+        stock.product_id ? parseInt(stock.product_id.toString(), 10) : ''
       ),
       quantity: new FormControl(stock.quantity || 10),
     });
@@ -110,6 +111,11 @@ export class StockInventoryComponent {
     const control = this.form.get('stock') as FormArray;
     console.log('stock (addStock)', stock);
     control.push(this.createStock(stock));
+  }
+
+  removeStock({ group, index }: { group: FormGroup, index: number }) {
+    const control = this.form.get('stock') as FormArray;
+    control.removeAt(index);
   }
 
   onSubmit() {
